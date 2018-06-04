@@ -1,0 +1,28 @@
+<?php
+// Code From: https://stackoverflow.com/questions/6765736/set-an-email-as-seen-on-imap-server
+// Connect to gmail
+$imapPath = '{imap.gmail.com:993/imap/ssl}INBOX';
+//$imapPath = '{imap.gmail.com:993/imap/ssl/novalidate-cert}INBOX';
+$username = 'Your-email@gmail.com';
+$password = 'Your-Password';
+$email_read = 'UNSEEN';
+
+// try to connect
+$inbox = imap_open($imapPath,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
+
+$emails = imap_search($inbox,$email_read);
+$ids = array();
+foreach($emails as $key => $mail) {
+    $ids [] = $mail;
+
+    // Do here whatever you want.
+}
+
+// Setting flag from un-seen email to seen on emails ID.
+imap_setflag_full($inbox,implode(",", $ids), "\\Seen \\Flagged"); //IMPORTANT
+
+// colse the connection
+imap_expunge($inbox);
+imap_close($inbox);
+
+?>
